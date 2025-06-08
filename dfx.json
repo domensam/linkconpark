@@ -1,0 +1,18 @@
+{
+  "canisters": {
+    "linkconpark": {
+      "frontend": {
+        "entrypoint": "index.html"
+      },
+      "source": ["out"],
+      "type": "assets"
+    }
+  },
+  "defaults": {
+    "build": {
+      "packtool": ""
+    }
+  },
+  "output_env_file": ".env",
+  "version": 1
+} 

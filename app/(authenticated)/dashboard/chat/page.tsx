@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Search,
   Send,
@@ -14,42 +14,44 @@ import {
   Video,
   Paperclip,
   Smile,
-} from "lucide-react"
+} from "lucide-react";
 
 // Sample data for conversations
 const conversations = [
   {
     id: 1,
-    name: "Sarah Wilson",
-    avatar: "/avatars/sarah.jpg",
-    lastMessage: "That sounds great! Looking forward to...",
-    time: "2m ago",
+    name: "Sarah Johnson",
+    avatar: "/placeholder-user.jpg",
+    lastMessage: "Thanks for the quick response!",
+    time: "10:30 AM",
     unread: 2,
     online: true,
   },
   {
     id: 2,
-    name: "Tech Solutions Inc.",
-    avatar: "/avatars/tech.jpg",
-    lastMessage: "Thank you for your application...",
-    time: "1h ago",
+    name: "Tech Support",
+    avatar: "/placeholder-user.jpg",
+    lastMessage: "Your issue has been resolved.",
+    time: "Yesterday",
     unread: 0,
     online: true,
   },
   {
     id: 3,
     name: "David Chen",
-    avatar: "/avatars/david.jpg",
-    lastMessage: "Can we schedule a call to discuss...",
-    time: "3h ago",
+    avatar: "/placeholder-user.jpg",
+    lastMessage: "Let's schedule a meeting",
+    time: "Yesterday",
     unread: 0,
     online: false,
   },
   // Add more conversations as needed
-]
+];
 
 export default function ChatPage() {
-  const [selectedConversation, setSelectedConversation] = useState(conversations[0])
+  const [selectedConversation, setSelectedConversation] = useState(
+    conversations[0]
+  );
 
   return (
     <div className="h-[calc(100vh-4rem)] flex gap-6">
@@ -59,10 +61,7 @@ export default function ChatPage() {
           <h2 className="text-xl font-semibold mb-4">Messages</h2>
           <div className="relative">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search conversations..."
-              className="pl-9"
-            />
+            <Input placeholder="Search conversations..." className="pl-9" />
           </div>
         </div>
         <ScrollArea className="flex-1">
@@ -80,7 +79,9 @@ export default function ChatPage() {
                 <div className="relative">
                   <Avatar>
                     <AvatarImage src={conversation.avatar} />
-                    <AvatarFallback>{conversation.name.slice(0, 2)}</AvatarFallback>
+                    <AvatarFallback>
+                      {conversation.name.slice(0, 2)}
+                    </AvatarFallback>
                   </Avatar>
                   {conversation.online && (
                     <span className="absolute bottom-0 right-0 w-3 h-3 border-2 border-background bg-green-500 rounded-full" />
@@ -89,9 +90,13 @@ export default function ChatPage() {
                 <div className="flex-1 text-left">
                   <div className="flex justify-between items-start">
                     <span className="font-medium">{conversation.name}</span>
-                    <span className="text-xs text-muted-foreground">{conversation.time}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {conversation.time}
+                    </span>
                   </div>
-                  <p className="text-sm text-muted-foreground truncate">{conversation.lastMessage}</p>
+                  <p className="text-sm text-muted-foreground truncate">
+                    {conversation.lastMessage}
+                  </p>
                 </div>
                 {conversation.unread > 0 && (
                   <span className="px-2 py-0.5 text-xs font-medium bg-primary text-primary-foreground rounded-full">
@@ -111,7 +116,9 @@ export default function ChatPage() {
           <div className="flex items-center gap-3">
             <Avatar>
               <AvatarImage src={selectedConversation.avatar} />
-              <AvatarFallback>{selectedConversation.name.slice(0, 2)}</AvatarFallback>
+              <AvatarFallback>
+                {selectedConversation.name.slice(0, 2)}
+              </AvatarFallback>
             </Avatar>
             <div>
               <h3 className="font-semibold">{selectedConversation.name}</h3>
@@ -142,21 +149,30 @@ export default function ChatPage() {
             <div className="flex gap-3 max-w-[80%]">
               <Avatar className="w-8 h-8">
                 <AvatarImage src={selectedConversation.avatar} />
-                <AvatarFallback>{selectedConversation.name.slice(0, 2)}</AvatarFallback>
+                <AvatarFallback>
+                  {selectedConversation.name.slice(0, 2)}
+                </AvatarFallback>
               </Avatar>
               <div className="bg-accent p-3 rounded-lg">
-                <p>Hi! I saw your profile and I think you'd be a great fit for our Senior Developer position.</p>
-                <span className="text-xs text-muted-foreground mt-1">10:30 AM</span>
+                <p>
+                  Hi! I saw your profile and I think you'd be a great fit for
+                  our Senior Developer position.
+                </p>
+                <span className="text-xs text-muted-foreground mt-1">
+                  10:30 AM
+                </span>
               </div>
             </div>
             <div className="flex gap-3 max-w-[80%] ml-auto flex-row-reverse">
               <Avatar className="w-8 h-8">
-                <AvatarImage src="/avatars/you.jpg" />
+                <AvatarImage src="/placeholder-user.jpg" />
                 <AvatarFallback>You</AvatarFallback>
               </Avatar>
               <div className="bg-primary text-primary-foreground p-3 rounded-lg">
                 <p>Thank you! I'd love to learn more about the position.</p>
-                <span className="text-xs text-primary-foreground/70 mt-1">10:32 AM</span>
+                <span className="text-xs text-primary-foreground/70 mt-1">
+                  10:32 AM
+                </span>
               </div>
             </div>
           </div>
@@ -168,10 +184,7 @@ export default function ChatPage() {
             <Button variant="ghost" size="icon">
               <Paperclip className="h-5 w-5" />
             </Button>
-            <Input
-              placeholder="Type a message..."
-              className="flex-1"
-            />
+            <Input placeholder="Type a message..." className="flex-1" />
             <Button variant="ghost" size="icon">
               <Smile className="h-5 w-5" />
             </Button>
@@ -182,5 +195,5 @@ export default function ChatPage() {
         </div>
       </Card>
     </div>
-  )
+  );
 }
