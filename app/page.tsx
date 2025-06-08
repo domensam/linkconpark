@@ -1,36 +1,36 @@
-"use client"
+"use client";
 
-import Image from "next/image"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { motion } from "framer-motion"
-import { GraduationCap, Briefcase } from "lucide-react"
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { GraduationCap, Briefcase } from "lucide-react";
 
 export default function UserTypePage() {
-  const router = useRouter()
+  const router = useRouter();
 
   const container = {
     hidden: { opacity: 0 },
     show: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
-  }
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
   const item = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0 }
-  }
+    show: { opacity: 1, y: 0 },
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-primary/5 to-secondary/10">
       <div className="absolute inset-0 bg-grid-white/10 bg-[size:20px_20px] [mask-image:radial-gradient(white,transparent_85%)]" />
-      
+
       <div className="container relative mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <motion.div 
+        <motion.div
           initial="hidden"
           animate="show"
           variants={container}
@@ -38,8 +38,8 @@ export default function UserTypePage() {
         >
           <motion.div variants={item} className="space-y-4">
             <Image
-              src="/skiillworks-full-light.png"
-              alt="SkillWorks"
+              src="/linkconpark-icon+title.png"
+              alt="LinkConPark"
               width={160}
               height={48}
               className="h-12 w-auto mx-auto hover:scale-105 transition-transform duration-300"
@@ -49,15 +49,16 @@ export default function UserTypePage() {
               Your Skills, Your Future
             </h1>
             <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
-              Connect with top talent or find your next opportunity in our modern skills marketplace
+              Connect with top talent or find your next opportunity in our
+              modern skills marketplace
             </p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             variants={item}
             className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:max-w-4xl lg:mx-auto"
           >
-            <Card 
+            <Card
               className="group relative overflow-hidden p-6 backdrop-blur-sm bg-background/60 hover:bg-background/80 transition-colors border-primary/10 hover:border-primary cursor-pointer"
               onClick={() => router.push("/onboarding/seeker")}
             >
@@ -68,15 +69,19 @@ export default function UserTypePage() {
                 </div>
                 <h2 className="text-2xl font-semibold">Find Work</h2>
                 <p className="text-muted-foreground">
-                  Showcase your skills and connect with businesses looking for talent
+                  Showcase your skills and connect with businesses looking for
+                  talent
                 </p>
-                <Button variant="ghost" className="group-hover:text-primary transition-colors">
+                <Button
+                  variant="ghost"
+                  className="group-hover:text-primary transition-colors"
+                >
                   Get Started →
                 </Button>
               </div>
             </Card>
 
-            <Card 
+            <Card
               className="group relative overflow-hidden p-6 backdrop-blur-sm bg-background/60 hover:bg-background/80 transition-colors border-primary/10 hover:border-primary cursor-pointer"
               onClick={() => router.push("/onboarding/provider")}
             >
@@ -89,7 +94,10 @@ export default function UserTypePage() {
                 <p className="text-muted-foreground">
                   Find skilled professionals to help grow your business
                 </p>
-                <Button variant="ghost" className="group-hover:text-primary transition-colors">
+                <Button
+                  variant="ghost"
+                  className="group-hover:text-primary transition-colors"
+                >
                   Get Started →
                 </Button>
               </div>
@@ -117,5 +125,5 @@ export default function UserTypePage() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

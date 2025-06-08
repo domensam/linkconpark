@@ -1,41 +1,56 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Bell, Calendar, Home, Menu, MessageSquare, Search, Wallet, User, PlusIcon, X, Settings } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { SignOutButton } from "../sign-out-button"
-import { cn } from "@/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import type React from "react";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  Bell,
+  Calendar,
+  Home,
+  Menu,
+  MessageSquare,
+  Search,
+  Wallet,
+  User,
+  PlusIcon,
+  X,
+  Settings,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { SignOutButton } from "../sign-out-button";
+import { cn } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 
 interface AuthenticatedLayoutProps {
-  children: React.ReactNode
-  userType: "seeker" | "provider"
+  children: React.ReactNode;
+  userType: "seeker" | "provider";
 }
 
-export function AuthenticatedLayout({ children, userType }: AuthenticatedLayoutProps) {
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [scrolled, setScrolled] = useState(false)
-  const pathname = usePathname()
+export function AuthenticatedLayout({
+  children,
+  userType,
+}: AuthenticatedLayoutProps) {
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 0)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setScrolled(window.scrollY > 0);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navigationItems =
     userType === "seeker"
@@ -54,7 +69,7 @@ export function AuthenticatedLayout({ children, userType }: AuthenticatedLayoutP
           { icon: MessageSquare, label: "Chat", href: "/dashboard/chat" },
           { icon: Wallet, label: "Wallet", href: "/wallet" },
           { icon: User, label: "Profile", href: "/profile/provider" },
-        ]
+        ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -82,7 +97,7 @@ export function AuthenticatedLayout({ children, userType }: AuthenticatedLayoutP
                     <div className="p-4 border-b">
                       <div className="flex items-center justify-between mb-4">
                         <Link href="/" className="flex items-center space-x-2">
-                          <span className="font-bold text-xl">SkillWorks</span>
+                          <span className="font-bold text-xl">LinkConPark</span>
                         </Link>
                         <Button
                           variant="ghost"
@@ -94,29 +109,36 @@ export function AuthenticatedLayout({ children, userType }: AuthenticatedLayoutP
                       </div>
                       <div className="flex items-center space-x-3">
                         <Avatar className="h-10 w-10">
-                          <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
+                          <AvatarImage
+                            src="/placeholder-avatar.jpg"
+                            alt="User"
+                          />
                           <AvatarFallback>U</AvatarFallback>
                         </Avatar>
                         <div>
                           <p className="font-medium">John Doe</p>
-                          <p className="text-sm text-muted-foreground">john@example.com</p>
+                          <p className="text-sm text-muted-foreground">
+                            john@example.com
+                          </p>
                         </div>
                       </div>
                     </div>
                     <nav className="flex-1 overflow-y-auto">
                       <div className="p-4">
-                        <div className="text-sm font-medium text-muted-foreground mb-2">Navigation</div>
+                        <div className="text-sm font-medium text-muted-foreground mb-2">
+                          Navigation
+                        </div>
                         <ul className="space-y-1">
                           {navigationItems.map((item) => {
-                            const isActive = pathname === item.href
+                            const isActive = pathname === item.href;
                             return (
                               <li key={item.href}>
                                 <Link
                                   href={item.href}
                                   className={cn(
                                     "flex items-center gap-3 px-3 py-2 rounded-lg transition-colors",
-                                    isActive 
-                                      ? "bg-primary text-primary-foreground" 
+                                    isActive
+                                      ? "bg-primary text-primary-foreground"
                                       : "hover:bg-gray-100"
                                   )}
                                   onClick={() => setIsMobileMenuOpen(false)}
@@ -125,13 +147,17 @@ export function AuthenticatedLayout({ children, userType }: AuthenticatedLayoutP
                                   <span>{item.label}</span>
                                 </Link>
                               </li>
-                            )
+                            );
                           })}
                         </ul>
                       </div>
                     </nav>
                     <div className="p-4 border-t space-y-4">
-                      <Button variant="outline" className="w-full justify-start" asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start"
+                        asChild
+                      >
                         <Link href="/settings">
                           <Settings className="mr-2 h-4 w-4" />
                           Settings
@@ -144,15 +170,17 @@ export function AuthenticatedLayout({ children, userType }: AuthenticatedLayoutP
               </Sheet>
 
               <Link href="/" className="flex items-center space-x-2">
-                <span className="font-bold text-xl hidden md:inline-block">SkillWorks</span>
-                <span className="font-bold text-xl md:hidden">SW</span>
+                <span className="font-bold text-xl hidden md:inline-block">
+                  LinkConPark
+                </span>
+                <span className="font-bold text-xl md:hidden">LCP</span>
               </Link>
             </div>
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center space-x-1">
               {navigationItems.map((item) => {
-                const isActive = pathname === item.href
+                const isActive = pathname === item.href;
                 return (
                   <Link
                     key={item.href}
@@ -167,7 +195,7 @@ export function AuthenticatedLayout({ children, userType }: AuthenticatedLayoutP
                     <item.icon className="h-5 w-5" />
                     <span>{item.label}</span>
                   </Link>
-                )
+                );
               })}
             </nav>
 
@@ -184,7 +212,10 @@ export function AuthenticatedLayout({ children, userType }: AuthenticatedLayoutP
 
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-9 w-9 rounded-full">
+                  <Button
+                    variant="ghost"
+                    className="relative h-9 w-9 rounded-full"
+                  >
                     <Avatar className="h-9 w-9">
                       <AvatarImage src="/placeholder-avatar.jpg" alt="User" />
                       <AvatarFallback>U</AvatarFallback>
@@ -238,7 +269,7 @@ export function AuthenticatedLayout({ children, userType }: AuthenticatedLayoutP
       <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg">
         <div className="grid grid-cols-5 gap-1 p-2">
           {navigationItems.slice(0, 5).map((item) => {
-            const isActive = pathname === item.href
+            const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
@@ -253,10 +284,10 @@ export function AuthenticatedLayout({ children, userType }: AuthenticatedLayoutP
                 <item.icon className="h-5 w-5" />
                 <span className="text-xs mt-1">{item.label}</span>
               </Link>
-            )
+            );
           })}
         </div>
       </nav>
     </div>
-  )
+  );
 }

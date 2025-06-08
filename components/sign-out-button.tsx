@@ -1,8 +1,13 @@
-"use client"
-import { Button } from "@/components/ui/button"
+"use client";
+import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
-export function SignOutButton() {
+interface SignOutButtonProps {
+  className?: string;
+}
+
+export function SignOutButton({ className }: SignOutButtonProps) {
   const router = useRouter();
 
   const handleSignOut = () => {
@@ -12,8 +17,8 @@ export function SignOutButton() {
   };
 
   return (
-    <Button onClick={handleSignOut}>
+    <Button onClick={handleSignOut} className={cn(className)}>
       Sign Out
     </Button>
-  )
+  );
 }

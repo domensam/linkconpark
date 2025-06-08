@@ -1,9 +1,9 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   Calendar,
   Search,
@@ -13,8 +13,8 @@ import {
   Menu,
   X,
   Home,
-  Activity
-} from "lucide-react"
+  Activity,
+} from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard/seeker", icon: Home },
@@ -24,15 +24,15 @@ const navigation = [
   { name: "Chat", href: "/dashboard/chat", icon: MessageSquare },
   { name: "Wallet", href: "/wallet", icon: Wallet },
   { name: "Profile", href: "/profile/seeker", icon: User },
-]
+];
 
 export default function DashboardLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const pathname = usePathname()
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <div className="min-h-screen bg-background">
@@ -54,7 +54,7 @@ export default function DashboardLayout({
           >
             <Menu className="h-6 w-6" />
           </Button>
-          <span className="font-semibold">SkillWorks</span>
+          <span className="font-semibold">LinkConPark</span>
           <div className="w-10" /> {/* Spacer for alignment */}
         </div>
       </div>
@@ -66,7 +66,7 @@ export default function DashboardLayout({
         }`}
       >
         <div className="flex h-16 items-center justify-between gap-x-6 border-b px-6">
-          <span className="font-semibold">SkillWorks</span>
+          <span className="font-semibold">LinkConPark</span>
           <Button
             variant="ghost"
             size="icon"
@@ -78,7 +78,7 @@ export default function DashboardLayout({
         </div>
         <nav className="flex flex-1 flex-col px-4 py-4 space-y-1">
           {navigation.map((item) => {
-            const isActive = pathname === item.href
+            const isActive = pathname === item.href;
             return (
               <Link
                 key={item.name}
@@ -91,12 +91,14 @@ export default function DashboardLayout({
               >
                 <item.icon
                   className={`h-5 w-5 ${
-                    isActive ? "text-primary" : "text-muted-foreground group-hover:text-accent-foreground"
+                    isActive
+                      ? "text-primary"
+                      : "text-muted-foreground group-hover:text-accent-foreground"
                   }`}
                 />
                 {item.name}
               </Link>
-            )
+            );
           })}
         </nav>
       </div>
@@ -105,7 +107,7 @@ export default function DashboardLayout({
       <div className="fixed bottom-0 left-0 right-0 h-16 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 lg:hidden z-40">
         <nav className="flex h-full items-center justify-around px-4">
           {navigation.slice(0, 5).map((item) => {
-            const isActive = pathname === item.href
+            const isActive = pathname === item.href;
             return (
               <Link
                 key={item.name}
@@ -117,7 +119,7 @@ export default function DashboardLayout({
                 <item.icon className="h-5 w-5" />
                 <span className="text-xs">{item.name}</span>
               </Link>
-            )
+            );
           })}
         </nav>
       </div>
@@ -127,5 +129,5 @@ export default function DashboardLayout({
         <div className="px-4 py-4 sm:px-6 lg:px-8">{children}</div>
       </main>
     </div>
-  )
+  );
 }
