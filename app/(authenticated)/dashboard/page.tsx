@@ -1,9 +1,18 @@
-"use client"
+"use client";
 
-import { Card } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Calendar, MapPin, DollarSign, Clock, Briefcase, TrendingUp, Users, Activity } from "lucide-react"
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Calendar,
+  MapPin,
+  DollarSign,
+  Clock,
+  Briefcase,
+  TrendingUp,
+  Users,
+  Activity,
+} from "lucide-react";
 
 // Mock data for active jobs/projects
 const mockJobs = [
@@ -31,7 +40,7 @@ const mockJobs = [
     progress: 0,
     teamSize: 4,
   },
-]
+];
 
 // Mock stats data
 const stats = [
@@ -59,16 +68,20 @@ const stats = [
     change: "+5",
     icon: Users,
   },
-]
+];
 
 export default function DashboardPage() {
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="container mx-auto px-4 py-8">
       {/* Header Section */}
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Welcome back, Jay!</h1>
-          <p className="text-muted-foreground">Here's what's happening with your projects today.</p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Welcome back, Jay!
+          </h1>
+          <p className="text-muted-foreground">
+            Here's what's happening with your projects today.
+          </p>
         </div>
         <div className="flex items-center gap-4">
           <Button className="btn-modern">
@@ -84,10 +97,14 @@ export default function DashboardPage() {
           <Card key={stat.title} className="p-6 hover-card">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-muted-foreground">{stat.title}</p>
+                <p className="text-sm font-medium text-muted-foreground">
+                  {stat.title}
+                </p>
                 <div className="flex items-baseline gap-2">
                   <p className="text-2xl font-bold">{stat.value}</p>
-                  <span className="text-sm font-medium text-green-600">{stat.change}</span>
+                  <span className="text-sm font-medium text-green-600">
+                    {stat.change}
+                  </span>
                 </div>
               </div>
               <div className="rounded-full bg-primary/10 p-3">
@@ -113,8 +130,10 @@ export default function DashboardPage() {
                       {job.company}
                     </p>
                   </div>
-                  <Badge 
-                    variant={job.status === "In Progress" ? "default" : "secondary"}
+                  <Badge
+                    variant={
+                      job.status === "In Progress" ? "default" : "secondary"
+                    }
                     className="rounded-full px-3"
                   >
                     {job.status}
@@ -144,10 +163,12 @@ export default function DashboardPage() {
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-sm font-medium">Progress</span>
-                      <span className="text-sm font-medium">{job.progress}%</span>
+                      <span className="text-sm font-medium">
+                        {job.progress}%
+                      </span>
                     </div>
                     <div className="h-2 bg-secondary rounded-full overflow-hidden">
-                      <div 
+                      <div
                         className="h-full bg-primary transition-all duration-300"
                         style={{ width: `${job.progress}%` }}
                       />
@@ -160,7 +181,9 @@ export default function DashboardPage() {
                     View Details
                   </Button>
                   <Button className="btn-modern">
-                    {job.status === "In Progress" ? "Track Time" : "Start Project"}
+                    {job.status === "In Progress"
+                      ? "Track Time"
+                      : "Start Project"}
                   </Button>
                 </div>
               </div>
@@ -169,5 +192,5 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }

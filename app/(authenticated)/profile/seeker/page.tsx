@@ -20,6 +20,12 @@ import {
   Award,
 } from "lucide-react";
 import TesdaCertificateModal from "@/components/TesdaCertificateModal";
+import {
+  ICPCertificateService,
+  Certificate,
+} from "@/lib/icp-certificate-service";
+import { useState, useRef } from "react";
+import { createHash } from "crypto";
 
 interface Skill {
   name: string;
@@ -46,6 +52,8 @@ interface Certification {
   issuer: string;
   year: string;
   verified?: boolean;
+  hash?: string;
+  file?: File;
 }
 
 interface SeekerProfilePageProps {}
@@ -54,6 +62,9 @@ const SeekerProfilePage: React.FC<SeekerProfilePageProps> = () => {
   const [editMode, setEditMode] = React.useState(false);
   const [isCertificateModalOpen, setIsCertificateModalOpen] =
     React.useState(false);
+  const [certificateService] = React.useState(
+    () => new ICPCertificateService()
+  );
   const [certifications, setCertifications] = React.useState<Certification[]>([
     {
       name: "AWS Certified Developer",
@@ -68,6 +79,13 @@ const SeekerProfilePage: React.FC<SeekerProfilePageProps> = () => {
       verified: true,
     },
   ]);
+  const [verifyingHash, setVerifyingHash] = React.useState("");
+  const [verificationResult, setVerificationResult] = React.useState<
+    Certificate | null | undefined
+  >();
+  const [uploadingFile, setUploadingFile] = useState<File | null>(null);
+  const [generatedHash, setGeneratedHash] = useState<string>("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const skills: Skill[] = [
     { name: "React", level: "Advanced", endorsements: 24 },
@@ -107,18 +125,119 @@ const SeekerProfilePage: React.FC<SeekerProfilePageProps> = () => {
     setIsCertificateModalOpen(true);
   };
 
-  const handleCertificateVerified = (isVerified: boolean) => {
-    if (isVerified) {
-      // Add the new certificate to the list
+  const handleCertificateAdded = (certificate: {
+    name: string;
+    hash: string;
+    verified: boolean;
+  }) => {
+    setCertifications((prev) => [
+      ...prev,
+      {
+        name: certificate.name,
+        issuer: "TESDA",
+        year: new Date().getFullYear().toString(),
+        verified: certificate.verified,
+        hash: certificate.hash,
+      },
+    ]);
+  };
+
+  const handleVerifyCertificate = async (hash: string) => {
+    try {
+      const result = await certificateService.verifyCertificate(hash);
+      setVerificationResult(result);
+
+      if (result) {
+        // Update the certification's verified status
+        setCertifications((prev) =>
+          prev.map((cert) =>
+            cert.hash === hash ? { ...cert, verified: true } : cert
+          )
+        );
+      } else {
+        // If not found on blockchain, try to store it
+        await handleStoreCertificate(hash);
+        alert("Certificate stored on blockchain. Please verify again.");
+      }
+    } catch (error) {
+      console.error("Error verifying certificate:", error);
+      setVerificationResult(null);
+      alert("Error verifying certificate. Please try again.");
+    }
+  };
+
+  const generateFileHash = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const buffer = e.target?.result;
+        if (buffer) {
+          // Convert ArrayBuffer to Buffer
+          const uint8Array = new Uint8Array(buffer as ArrayBuffer);
+          const hash = createHash("sha256").update(uint8Array).digest("hex");
+          resolve(hash);
+        } else {
+          reject(new Error("Failed to read file"));
+        }
+      };
+      reader.onerror = () => reject(new Error("Failed to read file"));
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploadingFile(file);
+    try {
+      const hash = await generateFileHash(file);
+      setGeneratedHash(hash);
+
+      // Add to certifications list as unverified
       setCertifications((prev) => [
         ...prev,
         {
-          name: "TESDA Certificate",
+          name: file.name,
           issuer: "TESDA",
           year: new Date().getFullYear().toString(),
-          verified: true,
+          verified: false, // Start as unverified
+          hash: hash,
+          file: file,
         },
       ]);
+
+      // Try to verify immediately
+      const verificationResult = await certificateService.verifyCertificate(
+        hash
+      );
+      if (verificationResult) {
+        // If it exists on the blockchain, mark as verified
+        setCertifications((prev) =>
+          prev.map((cert) =>
+            cert.hash === hash ? { ...cert, verified: true } : cert
+          )
+        );
+      } else {
+        // If it doesn't exist, store it on the blockchain
+        await handleStoreCertificate(hash);
+      }
+    } catch (error) {
+      console.error("Error processing file:", error);
+      alert("Error processing file. Please try again.");
+    } finally {
+      setUploadingFile(null);
+    }
+  };
+
+  const handleStoreCertificate = async (hash: string) => {
+    try {
+      await certificateService.storeCertificate(hash);
+    } catch (error) {
+      console.error("Error storing certificate:", error);
+      throw error;
     }
   };
 
@@ -129,8 +248,8 @@ const SeekerProfilePage: React.FC<SeekerProfilePageProps> = () => {
         <CardHeader>
           <div className="flex flex-col md:flex-row gap-6 items-start">
             <div className="relative">
-              <Avatar className="h-32 w-32">
-                <AvatarImage src="/avatars/user.jpg" />
+              <Avatar className="h-24 w-24">
+                <AvatarImage src="/placeholder-user.jpg" />
                 <AvatarFallback>JD</AvatarFallback>
               </Avatar>
               <Button
@@ -354,37 +473,56 @@ const SeekerProfilePage: React.FC<SeekerProfilePageProps> = () => {
               </div>
             ))}
           </div>
+        </CardContent>
+      </Card>
 
-          <div className="mt-8 space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Certifications</h3>
-              {editMode && (
-                <Button onClick={handleAddCertification}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add Certification
-                </Button>
-              )}
-            </div>
+      {/* Certifications Section */}
+      <Card className="p-6">
+        <CardHeader>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold">Certifications</h2>
+            {editMode && (
+              <Button onClick={handleAddCertification}>
+                <Plus className="h-4 w-4 mr-2" />
+                Add Certificate
+              </Button>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
             {certifications.map((cert, index) => (
-              <div key={index} className="p-4 bg-accent/50 rounded-lg">
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <Award className="h-4 w-4 text-muted-foreground" />
-                      <h4 className="font-medium">{cert.name}</h4>
-                      {cert.verified && (
-                        <span className="inline-flex items-center rounded-full bg-green-100 px-2 py-1 text-xs font-medium text-green-700">
-                          Verified
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      {cert.issuer} • {cert.year}
+              <div
+                key={index}
+                className="flex items-start justify-between p-4 border rounded-lg"
+              >
+                <div>
+                  <h3 className="font-medium">{cert.name}</h3>
+                  <p className="text-sm text-muted-foreground">{cert.issuer}</p>
+                  <p className="text-sm text-muted-foreground">{cert.year}</p>
+                  {cert.hash && (
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Hash: {cert.hash.substring(0, 8)}...
                     </p>
-                  </div>
-                  {editMode && (
-                    <Button variant="ghost" size="icon">
-                      <Edit2 className="h-4 w-4" />
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  {cert.verified ? (
+                    <Badge
+                      variant="default"
+                      className="bg-green-100 text-green-800"
+                    >
+                      Verified
+                    </Badge>
+                  ) : (
+                    <Badge variant="secondary">Unverified</Badge>
+                  )}
+                  {editMode && !cert.verified && cert.hash && (
+                    <Button
+                      onClick={() => handleVerifyCertificate(cert.hash!)}
+                      disabled={!cert.hash}
+                    >
+                      Verify
                     </Button>
                   )}
                 </div>
@@ -397,6 +535,7 @@ const SeekerProfilePage: React.FC<SeekerProfilePageProps> = () => {
       <TesdaCertificateModal
         isOpen={isCertificateModalOpen}
         onClose={() => setIsCertificateModalOpen(false)}
+        onCertificateAdded={handleCertificateAdded}
       />
     </div>
   );

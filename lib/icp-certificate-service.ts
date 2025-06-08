@@ -1,5 +1,5 @@
 import { Actor, HttpAgent } from "@dfinity/agent";
-import { idlFactory } from "../certificate_canister/src/declarations/certificate_canister_backend/certificate_canister_backend.did.js";
+import { idlFactory } from "../src/declarations/certificate_canister_backend/certificate_canister_backend.did.js";
 
 export interface Certificate {
   hash: string;
@@ -15,6 +15,14 @@ export class ICPCertificateService {
     this.agent = new HttpAgent({
       host: process.env.NEXT_PUBLIC_ICP_HOST || "http://localhost:4943",
     });
+
+    // Only fetch the root key in development (not in production)
+    if (process.env.NODE_ENV !== "production") {
+      this.agent.fetchRootKey().catch((err) => {
+        console.warn("Unable to fetch root key. Check if local replica is running.");
+        console.error(err);
+      });
+    }
 
     // Create actor with the canister ID
     this.actor = Actor.createActor(idlFactory, {
