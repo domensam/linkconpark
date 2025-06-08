@@ -8,6 +8,14 @@ export interface CertificateVerificationResult {
   transactionId: string;
 }
 
+// Define the type for the ICP canister result
+interface ICPCanisterResult {
+  timestamp: string;
+  blockNumber: string;
+  transactionId: string;
+  isVerified?: boolean;
+}
+
 export class ICPCertificateService {
   // Generate a hash for the certificate file
   static async generateCertificateHash(file: File): Promise<string> {
@@ -41,7 +49,7 @@ export class ICPCertificateService {
       const actor = await createActor(authClient);
       
       // Call your ICP canister's storeCertificate method
-      const result = await actor.storeCertificate(hash);
+      const result = await actor.storeCertificate(hash) as ICPCanisterResult;
       
       return {
         isVerified: true,
@@ -62,10 +70,10 @@ export class ICPCertificateService {
       const actor = await createActor(authClient);
       
       // Call your ICP canister's verifyCertificate method
-      const result = await actor.verifyCertificate(hash);
+      const result = await actor.verifyCertificate(hash) as ICPCanisterResult;
       
       return {
-        isVerified: result.isVerified,
+        isVerified: result.isVerified ?? false,
         timestamp: result.timestamp,
         blockNumber: result.blockNumber,
         transactionId: result.transactionId
