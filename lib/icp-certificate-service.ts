@@ -1,85 +1,64 @@
-import { createHash } from 'crypto';
-import { initAuth, createActor } from '../icp.config';
+import { Actor, HttpAgent } from "@dfinity/agent";
+import { idlFactory } from "../certificate_canister/src/declarations/certificate_canister_backend/certificate_canister_backend.did.js";
 
-export interface CertificateVerificationResult {
-  isVerified: boolean;
-  timestamp: string;
-  blockNumber: string;
-  transactionId: string;
-}
-
-// Define the type for the ICP canister result
-interface ICPCanisterResult {
-  timestamp: string;
-  blockNumber: string;
-  transactionId: string;
-  isVerified?: boolean;
+export interface Certificate {
+  hash: string;
+  timestamp: bigint;
+  owner: string;
 }
 
 export class ICPCertificateService {
-  // Generate a hash for the certificate file
-  static async generateCertificateHash(file: File): Promise<string> {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      
-      reader.onload = (event) => {
-        try {
-          const buffer = event.target?.result as ArrayBuffer;
-          const hash = createHash('sha256')
-            .update(Buffer.from(buffer))
-            .digest('hex');
-          resolve(hash);
-        } catch (error) {
-          reject(error);
-        }
-      };
-      
-      reader.onerror = () => {
-        reject(new Error('Failed to read file'));
-      };
-      
-      reader.readAsArrayBuffer(file);
+  private agent: HttpAgent;
+  private actor: any;
+
+  constructor() {
+    this.agent = new HttpAgent({
+      host: process.env.NEXT_PUBLIC_ICP_HOST || "http://localhost:4943",
+    });
+
+    // Create actor with the canister ID
+    this.actor = Actor.createActor(idlFactory, {
+      agent: this.agent,
+      canisterId: process.env.NEXT_PUBLIC_CERTIFICATE_CANISTER_ID!,
     });
   }
 
-  // Store certificate hash on ICP
-  static async storeOnBlockchain(hash: string): Promise<CertificateVerificationResult> {
+  async storeCertificate(hash: string): Promise<void> {
     try {
-      const authClient = await initAuth();
-      const actor = await createActor(authClient);
-      
-      // Call your ICP canister's storeCertificate method
-      const result = await actor.storeCertificate(hash) as ICPCanisterResult;
-      
-      return {
-        isVerified: true,
-        timestamp: result.timestamp,
-        blockNumber: result.blockNumber,
-        transactionId: result.transactionId
-      };
+      await this.actor.storeCertificate(hash);
     } catch (error) {
-      console.error('Error storing certificate on ICP:', error);
+      console.error("Error storing certificate:", error);
       throw error;
     }
   }
 
-  // Verify certificate on ICP
-  static async verifyOnBlockchain(hash: string): Promise<CertificateVerificationResult> {
+  async verifyCertificate(hash: string): Promise<Certificate | null> {
     try {
-      const authClient = await initAuth();
-      const actor = await createActor(authClient);
-      
-      // Call your ICP canister's verifyCertificate method
-      const result = await actor.verifyCertificate(hash) as ICPCanisterResult;
-      
-      return {
-        isVerified: result.isVerified ?? false,
-        timestamp: result.timestamp,
-        blockNumber: result.blockNumber,
-        transactionId: result.transactionId
-      };
+      const result = await this.actor.verifyCertificate(hash);
+      return result[0] ? {
+        hash: result[0].hash,
+        timestamp: result[0].timestamp,
+        owner: result[0].owner.toString(),
+      } : null;
     } catch (error) {
-      console.error('Error verifying certificate on ICP:', error);
+      console.error("Error verifying certificate:", error);
+      throw error;
+    }
+  }
+
+  async getCertificates(): Promise<[string, Certificate][]> {
+    try {
+      const result = await this.actor.getCertificates();
+      return result.map(([hash, cert]: [string, any]) => [
+        hash,
+        {
+          hash: cert.hash,
+          timestamp: cert.timestamp,
+          owner: cert.owner.toString(),
+        },
+      ]);
+    } catch (error) {
+      console.error("Error getting certificates:", error);
       throw error;
     }
   }
