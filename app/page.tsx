@@ -1,14 +1,20 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { GraduationCap, Briefcase } from "lucide-react";
+import { InternetIdentityLogin } from "@/components/InternetIdentityLogin";
 
 export default function UserTypePage() {
   const router = useRouter();
+  const [showLogin, setShowLogin] = useState(false);
+  const [selectedType, setSelectedType] = useState<
+    "seeker" | "provider" | null
+  >(null);
 
   const container = {
     hidden: { opacity: 0 },
@@ -23,6 +29,19 @@ export default function UserTypePage() {
   const item = {
     hidden: { opacity: 0, y: 20 },
     show: { opacity: 1, y: 0 },
+  };
+
+  const handleRoleSelect = (type: "seeker" | "provider") => {
+    setSelectedType(type);
+    setShowLogin(true);
+  };
+
+  const handleLoginSuccess = (principal: string) => {
+    setShowLogin(false);
+    // Store the principal in localStorage or state management
+    localStorage.setItem("userPrincipal", principal);
+    // Route to the appropriate onboarding page
+    router.push(`/onboarding/${selectedType}`);
   };
 
   return (
@@ -60,7 +79,7 @@ export default function UserTypePage() {
           >
             <Card
               className="group relative overflow-hidden p-6 backdrop-blur-sm bg-background/60 hover:bg-background/80 transition-colors border-primary/10 hover:border-primary cursor-pointer"
-              onClick={() => router.push("/onboarding/seeker")}
+              onClick={() => handleRoleSelect("seeker")}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative space-y-4">
@@ -83,7 +102,7 @@ export default function UserTypePage() {
 
             <Card
               className="group relative overflow-hidden p-6 backdrop-blur-sm bg-background/60 hover:bg-background/80 transition-colors border-primary/10 hover:border-primary cursor-pointer"
-              onClick={() => router.push("/onboarding/provider")}
+              onClick={() => handleRoleSelect("provider")}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative space-y-4">
@@ -124,6 +143,15 @@ export default function UserTypePage() {
           </motion.div>
         </motion.div>
       </div>
+
+      {selectedType && (
+        <InternetIdentityLogin
+          isOpen={showLogin}
+          onClose={() => setShowLogin(false)}
+          onSuccess={handleLoginSuccess}
+          userType={selectedType}
+        />
+      )}
     </div>
   );
 }

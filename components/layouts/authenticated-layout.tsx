@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import {
   Bell,
   Calendar,
-  Home,
+  HomeIcon,
   Menu,
   MessageSquare,
   Search,
@@ -55,7 +55,7 @@ export function AuthenticatedLayout({
   const navigationItems =
     userType === "seeker"
       ? [
-          { icon: Home, label: "Home", href: "/dashboard/seeker" },
+          { icon: HomeIcon, label: "Home", href: "/dashboard/seeker" },
           { icon: Calendar, label: "Calendar", href: "/calendar" },
           { icon: Search, label: "Search Jobs", href: "/job-search" },
           { icon: MessageSquare, label: "Chat", href: "/dashboard/chat" },
@@ -63,7 +63,7 @@ export function AuthenticatedLayout({
           { icon: User, label: "Profile", href: "/profile/seeker" },
         ]
       : [
-          { icon: Home, label: "Home", href: "/dashboard/provider" },
+          { icon: HomeIcon, label: "Home", href: "/dashboard/provider" },
           { icon: Calendar, label: "Calendar", href: "/calendar" },
           { icon: PlusIcon, label: "Post Job", href: "/post-job" },
           { icon: MessageSquare, label: "Chat", href: "/dashboard/chat" },
