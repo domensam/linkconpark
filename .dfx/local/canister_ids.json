@@ -1,0 +1,14 @@
+{
+  "__Candid_UI": {
+    "local": "xad5d-bh777-77774-qaaia-cai"
+  },
+  "certificate_canister_backend": {
+    "local": "v56tl-sp777-77774-qaahq-cai"
+  },
+  "certificate_canister_frontend": {
+    "local": "xhc3x-m7777-77774-qaaiq-cai"
+  },
+  "linkconpark": {
+    "local": "xobql-2x777-77774-qaaja-cai"
+  }
+}

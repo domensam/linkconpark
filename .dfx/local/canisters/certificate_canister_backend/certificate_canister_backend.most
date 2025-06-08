@@ -1,0 +1,7 @@
+// Version: 1.0.0
+type Certificate__492548934 =
+  {hash : Text; owner : Principal; timestamp : Int};
+actor {
+  stable var certificates : [(Text, Certificate__492548934)];
+  stable var nextId : Nat
+};

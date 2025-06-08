@@ -1,4 +1,7 @@
 {
+  "certificate_canister_backend": {
+    "ic": "tmoru-kqaaa-aaaab-qbzza-cai"
+  },
   "linkconpark": {
     "ic": "tfn2i-4yaaa-aaaab-qbzyq-cai"
   }

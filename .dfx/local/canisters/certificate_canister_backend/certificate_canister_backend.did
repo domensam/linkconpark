@@ -1,0 +1,14 @@
+type Certificate = 
+ record {
+   hash: text;
+   owner: principal;
+   timestamp: int;
+ };
+service : {
+  getCertificates: () -> (vec record {
+                                text;
+                                Certificate;
+                              }) query;
+  storeCertificate: (hash: text) -> ();
+  verifyCertificate: (hash: text) -> (opt Certificate) query;
+}

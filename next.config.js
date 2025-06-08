@@ -5,6 +5,7 @@ const nextConfig = {
   },
   // Configure which pages to export
   trailingSlash: true,
+  output: 'export',
 };
 
 module.exports = nextConfig; 

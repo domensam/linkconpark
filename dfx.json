@@ -6,6 +6,19 @@
       },
       "source": ["out"],
       "type": "assets"
+    },
+    "certificate_canister_backend": {
+      "main": "certificate_canister/src/certificate_canister_backend/main.mo",
+      "type": "motoko"
+    },
+    "certificate_canister_frontend": {
+      "dependencies": [
+        "certificate_canister_backend"
+      ],
+      "source": [
+        "certificate_canister/src/certificate_canister_frontend/dist"
+      ],
+      "type": "assets"
     }
   },
   "defaults": {
